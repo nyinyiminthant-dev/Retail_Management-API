@@ -19,6 +19,8 @@ namespace BAL.Services
 
         public async Task<OrderResponseDTO> CreateOrder(OrderRequestDTO requestDTO)
         {
+            OrderResponseDTO model = new OrderResponseDTO();
+
             var product = await _unitOfWork.Product.GetByIdAsync(requestDTO.ProductId);
             if (product == null)
             {
@@ -29,25 +31,58 @@ namespace BAL.Services
                 };
             }
 
+            if(product.IsOut == "Y")
+            {
+                model.IsSuccess = true;
+                model.Message = "Product is out of stock";
+                model.Data = null;
+                return model;
+            }
+
             var order = new Order
             {
                 ProductId = product.ProductId,
                 ProductName = product.Name,
                 Quantity = requestDTO.Quantity,
-                Price = product.Price * requestDTO.Quantity,
-                Profit = product.Profit * requestDTO.Quantity,
-                Status = requestDTO.Status
+                Price = product.Price ,
+                Profit = product.Profit ,
+                IsOrder = "pending",
+                SaleDate = DateTime.Now,
+                TotalPrice = product.Price * requestDTO.Quantity,
+                TotalProfit = product.Profit * requestDTO.Quantity
             };
 
+          
+
+            if (product.Stock < requestDTO.Quantity)
+            {
+                model.IsSuccess = false;
+                model.Message = "Please decreas the quantity";
+                return model;
+            }
+
+            product.Stock -= order.Quantity;
+
+            if (product.Stock == 0)
+            {
+                product.IsOut = "Y";
+                _unitOfWork.Product.Update(product);
+
+               
+            }
+
+
+           
             await _unitOfWork.Order.Add(order);
             int result = await _unitOfWork.SaveAsync();
 
-            return new OrderResponseDTO
-            {
-                IsSuccess = result > 0,
-                Message = result > 0 ? "Order created successfully." : "Failed to create order.",
-                Data = order
-            };
+
+                model.IsSuccess = result > 0;
+                model.Message = result > 0 ? "Order created successfully." : "Failed to create order.";
+                model.Data = order;
+
+            return model;
+         
         }
 
         public async Task<OrderResponseDTO> DeleteOrder(int id)
@@ -125,7 +160,7 @@ namespace BAL.Services
             order.Quantity = requestDTO.Quantity;
             order.Price = product.Price * requestDTO.Quantity;
             order.Profit = product.Profit * requestDTO.Quantity;
-            order.Status = requestDTO.Status;
+           
 
             _unitOfWork.Order.Update(order);
             int result = await _unitOfWork.SaveAsync();

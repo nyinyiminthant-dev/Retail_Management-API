@@ -27,7 +27,7 @@ namespace BAL.Shared
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
-            
+            services.AddScoped<IConfirmOrderService, ConFirmOrderService>();
         }
     }
 }

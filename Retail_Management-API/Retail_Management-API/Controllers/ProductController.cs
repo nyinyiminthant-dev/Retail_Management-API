@@ -45,7 +45,7 @@ namespace Retail_Management_API.Controllers
                 return BadRequest(new ResponseModel { Message = ex.Message, Status = APIStatus.SystemError });
             }
         }
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO request)
         {
             try
@@ -59,7 +59,7 @@ namespace Retail_Management_API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("Update/{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductRequestDTO request)
         {
             try
@@ -73,7 +73,7 @@ namespace Retail_Management_API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             try

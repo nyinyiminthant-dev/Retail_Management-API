@@ -10,7 +10,7 @@ namespace MODEL.Entities;
 
 
 
-[Table("Order_Tbl")]
+[Table("Sale_Tbl")]
 public class Order
 {
 
@@ -23,6 +23,13 @@ public class Order
     public decimal Price { get; set; }
     public decimal Profit { get; set; }
 
-    public string Status { get; set; }
+    public string IsOrder { get; set; }
+
+    public decimal TotalPrice { get; set; }
+
+    public decimal TotalProfit { get; set; }
+
+    public DateTime SaleDate { get; set; }
+
 }
 

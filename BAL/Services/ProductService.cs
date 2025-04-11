@@ -18,13 +18,17 @@ namespace BAL.Services
         }
         public async Task<ProductResponseDTO> CreateProduct(ProductRequestDTO requestDTO)
         {
-           var prodcut = new Product
-           {
-               Name = requestDTO.Name,
-               Stock = requestDTO.Stock,
-               Price = requestDTO.Price,
-               Profit = requestDTO.Profit
-           };
+            var prodcut = new Product
+            {
+                Name = requestDTO.Name,
+                Stock = requestDTO.Stock,
+                Price = requestDTO.Price,
+                Profit = requestDTO.Profit,
+                CreatedDate = DateTime.Now,
+                UpdateDate = DateTime.Now,
+                IsOut = "N"
+
+            };
             await _unitOfWork.Product.Add(prodcut);
           int result =   await _unitOfWork.SaveAsync();
 
@@ -89,15 +93,25 @@ namespace BAL.Services
 
         public async Task<ProductResponseDTO> GetProductById(int id)
         {
+
+            ProductResponseDTO model = new ProductResponseDTO();
            
             var product = await _unitOfWork.Product.GetById(id);
 
-            return new ProductResponseDTO
+            if(product.IsOut == "Y")
             {
-                IsSuccess = product != null,
-                Message = product != null ? "Product retrieved." : "Product not found.",
-                Data = product!
-            };
+                model.Message = "Out of stock";
+                model.IsSuccess = true;
+                model.Data = product;
+            }
+
+
+                model.IsSuccess = product != null;
+                model.Message = product != null ? "Product retrieved." : "Product not found.";
+                model.Data = product!;
+
+            return model;
+           
         }
 
         public async Task<ProductResponseDTO> UpdateProduct(int id, ProductRequestDTO requestDTO)
@@ -110,15 +124,51 @@ namespace BAL.Services
                 {
                     IsSuccess = false,
                     Message = "Product not found.",
-                    Data = null
+                    Data = null!
                 };
             }
-            productId.Name = requestDTO.Name;
-            productId.Stock = requestDTO.Stock;
-            productId.Price = requestDTO.Price;
-            productId.Profit = requestDTO.Profit;
+            if(requestDTO.Name is not "string")
+            {
+
+                productId.Name = requestDTO.Name;
+            }
+
+            if(requestDTO.Stock != 0)
+            {
+                productId.Stock = requestDTO.Stock;
+
+            }
+
+            if(requestDTO.Price != 0)
+            {
+                productId.Price = requestDTO.Price;
+            }
+           
+            if(requestDTO.Profit != 0)
+            {
+                productId.Profit = requestDTO.Profit;
+            }
+
+
+            if (productId.Stock > 0)
+            {
+                productId.IsOut = "N";
+            } 
+            else if (productId.Stock < 0)
+            {
+                productId.IsOut = "Y";
+                productId.Stock = 0;
+            }
+
+            productId.UpdateDate = DateTime.Now;
             _unitOfWork.Product.Update(productId);
+
+          
+
+            
+
             int result = await _unitOfWork.SaveAsync();
+
             return new ProductResponseDTO
             {
                 IsSuccess = result > 0,

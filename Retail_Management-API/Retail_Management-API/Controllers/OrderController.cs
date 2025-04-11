@@ -48,7 +48,7 @@ namespace Retail_Management_API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> CreateOrder([FromBody] OrderRequestDTO request)
         {
             try
@@ -63,7 +63,7 @@ namespace Retail_Management_API.Controllers
 
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("Update/{id}")]
         public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderRequestDTO request)
         {
             try
@@ -79,7 +79,7 @@ namespace Retail_Management_API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             try
