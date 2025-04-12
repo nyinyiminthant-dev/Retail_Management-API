@@ -136,6 +136,7 @@ namespace BAL.Services
         public async Task<OrderResponseDTO> UpdateOrder(int id, OrderRequestDTO requestDTO)
         {
             var order = await _unitOfWork.Order.GetByIdAsync(id);
+            var productName = await _unitOfWork.Product.GetByCondition(p => p.Name == requestDTO.ProductName);
             if (order == null)
             {
                 return new OrderResponseDTO
@@ -155,13 +156,20 @@ namespace BAL.Services
                 };
             }
 
-            order.ProductId = product.ProductId;
-            order.ProductName = product.Name;
-            order.Quantity = requestDTO.Quantity;
-            order.Price = product.Price * requestDTO.Quantity;
-            order.Profit = product.Profit * requestDTO.Quantity;
-           
 
+            
+
+            order.ProductId = product.ProductId;
+
+
+            order.ProductName = product.Name;
+            
+            order.Quantity = requestDTO.Quantity;
+            order.Price = product.Price;
+            order.Profit = product.Profit ;
+            order.TotalPrice = product.Price * requestDTO.Quantity;
+            order.TotalProfit = product.Profit * requestDTO.Quantity;
+                
             _unitOfWork.Order.Update(order);
             int result = await _unitOfWork.SaveAsync();
 

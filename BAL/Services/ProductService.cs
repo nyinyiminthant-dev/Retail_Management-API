@@ -114,6 +114,39 @@ namespace BAL.Services
            
         }
 
+        public async Task<ProductResponseDTO> IncreaseQuantity(int id, ProductRequestDTO requestDTO)
+        {
+            ProductResponseDTO model = new ProductResponseDTO();
+
+            var product = await _unitOfWork.Product.GetById(id);
+            
+            if(product is null)
+            {
+                model.IsSuccess= false;
+                model.Message = "No product found with that id.";
+                model.Data = null;
+
+                return model;
+            }
+
+            if(requestDTO.Stock is not  0)
+            {
+                product.Stock += requestDTO.Stock;
+            }
+
+            _unitOfWork.Product.Update(product);
+           var result =   await _unitOfWork.SaveAsync();
+
+            string message = result > 0 ? "Increase stock successful" : "Failed";
+
+            model.IsSuccess = result > 0;
+            model.Message = message;
+            model.Data = product;
+
+            return model;
+
+        }
+
         public async Task<ProductResponseDTO> UpdateProduct(int id, ProductRequestDTO requestDTO)
         {
            var productId = await _unitOfWork.Product.GetByIdAsync(id);
@@ -176,5 +209,7 @@ namespace BAL.Services
                 Data = productId
             };
         }
+
+        
     }
 }
