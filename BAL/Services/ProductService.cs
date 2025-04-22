@@ -80,6 +80,8 @@ namespace BAL.Services
                 model.Message = "No Found";
                 model.IsSuccess = false;
                 model.Data = null;
+
+                return model;
             }
 
             model.Message = "Success";
@@ -172,12 +174,13 @@ namespace BAL.Services
 
             }
 
-            if(requestDTO.Price != 0)
+            if(requestDTO.Price != 0 && requestDTO.Price > 0)
             {
+               
                 productId.Price = requestDTO.Price;
             }
            
-            if(requestDTO.Profit != 0)
+            if(requestDTO.Profit != 0 && requestDTO.Profit > 0)
             {
                 productId.Profit = requestDTO.Profit;
             }

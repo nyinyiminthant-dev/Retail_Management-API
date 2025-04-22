@@ -22,6 +22,7 @@ namespace REPOSITORY.UnitOfWork
             _dataContext = dataContext;
             Product = new ProductRepository(_dataContext);
             Order = new OrderRepository(_dataContext);
+            User = new UserRepository(_dataContext);
             AppSettings = appsettings.Value;
 
         }
@@ -29,6 +30,8 @@ namespace REPOSITORY.UnitOfWork
         public IProductRepository Product { get; set; }
 
         public IOrderRepository Order { get; set; }
+
+        public IUserRepository User { get; set; }
 
         public AppSettings AppSettings { get; set; }
 

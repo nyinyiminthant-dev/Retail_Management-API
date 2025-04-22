@@ -13,6 +13,8 @@ namespace REPOSITORY.UnitOfWork
         IProductRepository Product { get; }
         IOrderRepository Order { get; }
 
+        IUserRepository User { get; }
+
         AppSettings AppSettings { get; set; }
         Task<int> SaveAsync();
     }

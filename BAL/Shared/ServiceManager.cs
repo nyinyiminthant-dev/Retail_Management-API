@@ -28,6 +28,8 @@ namespace BAL.Shared
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IConfirmOrderService, ConFirmOrderService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();    
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MODEL;
+using MODEL.Entities;
 
 namespace REPOSITORY.Repositories
 {
@@ -87,13 +88,17 @@ namespace REPOSITORY.Repositories
                     { "Pagination", $"No entities found on page {page}." },
                 };
                 throw new ArgumentNullException(nameof(entitiesPerPage));
-                //  throw new CustomException(errors, HttpStatusCode.NotFound);
+               
             }
 
             return entitiesPerPage;
         }
 
-        public async Task<T?> GetById(int id) => await _entities.FindAsync(id);
+        public async Task<T?> GetByName(string name) =>
+     await _entities.FirstOrDefaultAsync(e => EF.Property<string>(e, "Name") == name);
+
+        public async Task<T?> GetByEmail(string email) =>
+            await _context.Set<T>().FirstOrDefaultAsync(e => EF.Property<string>(e, "Email") == email);
 
         public async Task<T?> GetByIdAsync(int id)
         {
@@ -105,7 +110,7 @@ namespace REPOSITORY.Repositories
                 {
                     { "Category", $"Category with ID {id} not found." },
                 };
-                // throw new CustomException(errors, HttpStatusCode.NotFound);
+                
                 throw new ArgumentNullException($"{nameof(entities)}");
             }
 
@@ -213,7 +218,7 @@ namespace REPOSITORY.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<T?> GetByIdAsync(Guid id)
+        public  async Task<T?> GetById(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }

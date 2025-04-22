@@ -12,6 +12,8 @@ namespace REPOSITORY.Repositories
         Task<IEnumerable<T>> GetAll();
         Task<IEnumerable<T>> GetAllAsyncWithPagination(int page, int pageSize);
         Task<T?> GetById(int id);
+        Task<T?> GetByName(string name);
+        Task<T?> GetByEmail(string name);
         Task<T?> GetByIdAsync(int id);
         Task Add(T entity);
         Task AddMultiple(IEnumerable<T> entity);
