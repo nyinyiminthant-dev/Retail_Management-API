@@ -314,4 +314,61 @@ public class UserService : IUserService
 
         return model;
     }
+
+    public async Task<UserResponseDTO> ResendOTP(string email)
+    {
+        UserResponseDTO model = new UserResponseDTO();
+
+        var user = await _unitOfWork.User.GetByEmail(email);
+
+        if (user == null)
+        {
+            model.IsSuccess = false;
+            model.Message = "Email not found.";
+            model.Data = null;
+            return model;
+        }
+
+        if (user.Status == "Y")
+        {
+            model.IsSuccess = false;
+            model.Message = "User is already verified.";
+            model.Data = user;
+            return model;
+        }
+
+        var newOtp = GenerateOTP();
+        user.OTP = newOtp;
+        user.OTP_Exp = DateTime.Now.AddMinutes(5);
+        user.UpdateAt = DateTime.Now;
+
+        _unitOfWork.User.Update(user);
+        var result = await _unitOfWork.SaveAsync();
+
+        if (result > 0)
+        {
+            bool emailSent = SendOTPEmail(user.Email, user.Name, newOtp);
+
+            if (!emailSent)
+            {
+                model.IsSuccess = false;
+                model.Message = "Failed to send OTP email.";
+                model.Data = user;
+                return model;
+            }
+
+            model.IsSuccess = true;
+            model.Message = "OTP has been resent to your email.";
+            model.Data = user;
+        }
+        else
+        {
+            model.IsSuccess = false;
+            model.Message = "Failed to update OTP.";
+            model.Data = user;
+        }
+
+        return model;
+    }
+
 }

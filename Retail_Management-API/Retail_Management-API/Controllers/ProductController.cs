@@ -11,7 +11,7 @@ namespace Retail_Management_API.Controllers
 {
     [ApiController]
    
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] 
     [ApiVersion("1.0")]
     public class ProductController : ControllerBase
     {

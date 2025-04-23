@@ -17,5 +17,7 @@ namespace BAL.IServices
         Task<UserResponseDTO> Ban(int id);
 
         Task<UserResponseDTO> VerifyEmail(string email, string otp);
+
+        Task<UserResponseDTO> ResendOTP(string email);
     }
 }

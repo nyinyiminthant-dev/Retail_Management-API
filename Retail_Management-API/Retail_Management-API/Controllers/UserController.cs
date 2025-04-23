@@ -99,6 +99,21 @@ public class UserController : ControllerBase
     }
 
 
+
+    [HttpPost("ResendOTP")]
+    public async Task<IActionResult> ResendOTP(string email)
+    {
+        try
+        {
+            var response = await _userService.ResendOTP(email);
+            return Ok(new ResponseModel { Message = response.Message, Status = APIStatus.Successful, Data = response.Data });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ResponseModel { Message = ex.Message, Status = APIStatus.SystemError });
+        }
+    }
+
     [Authorize(Roles = "Admin")]
     [HttpPatch("Ban/{id}")]
     public async Task<IActionResult> Ban(int id)
