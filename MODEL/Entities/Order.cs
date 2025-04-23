@@ -31,5 +31,7 @@ public class Order
 
     public DateTime SaleDate { get; set; }
 
+    public int UserId { get; set; }
+
 }
 

@@ -40,6 +40,22 @@ namespace Retail_Management_API.Controllers
         }
 
 
+
+        [Authorize(Roles = "User")]
+        [HttpGet("GetByUserId/{userId}")]
+        public async Task<IActionResult> GetAllOrdersByUserId(int userId)
+        {
+            try
+            {
+                var response = await _orderService.GetAllOrdersByUserId(userId);
+                return Ok(new ResponseModel { Message = response.Message, Status = APIStatus.Successful, Data = response.Data });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel { Message = ex.Message, Status = APIStatus.SystemError });
+            }
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(int id)
@@ -62,7 +78,7 @@ namespace Retail_Management_API.Controllers
         {
             try
             {
-                var response = await _orderService.CreateOrder(request);
+                var response = await _orderService.InsertOrder(request);
                 return Ok(new ResponseModel { Message = response.Message, Status = APIStatus.Successful, Data = response.Data });
             }
             catch (Exception ex)

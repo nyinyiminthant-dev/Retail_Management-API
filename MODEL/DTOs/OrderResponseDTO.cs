@@ -13,3 +13,8 @@ public class OrderResponseDTO : Common
 
     public Order Data { get; set; }
 }
+
+public class OrderListResponseDTO : Common
+{
+ public List<Order> Data { get; set; }   
+}
