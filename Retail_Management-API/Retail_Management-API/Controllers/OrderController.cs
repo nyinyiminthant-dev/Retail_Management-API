@@ -1,4 +1,6 @@
-﻿using BAL.IServices;
+﻿using Asp.Versioning;
+using BAL.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.ApplicationConfig;
 using MODEL.DTOs;
@@ -8,7 +10,9 @@ using System.Threading.Tasks;
 namespace Retail_Management_API.Controllers
 {
     [ApiController]
+   
     [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -18,6 +22,8 @@ namespace Retail_Management_API.Controllers
             _orderService = orderService;
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllOrders()
         {
@@ -33,6 +39,8 @@ namespace Retail_Management_API.Controllers
 
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
@@ -48,6 +56,7 @@ namespace Retail_Management_API.Controllers
             }
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost("Add")]
         public async Task<IActionResult> CreateOrder([FromBody] OrderRequestDTO request)
         {
@@ -63,6 +72,7 @@ namespace Retail_Management_API.Controllers
 
         }
 
+        [Authorize(Roles = "User")]
         [HttpPatch("Update/{id}")]
         public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderRequestDTO request)
         {
@@ -79,6 +89,7 @@ namespace Retail_Management_API.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {

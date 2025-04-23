@@ -1,4 +1,6 @@
-﻿using BAL.IServices;
+﻿
+using AutoMapper;
+using BAL.IServices;
 using MODEL.DTOs;
 using MODEL.Entities;
 using REPOSITORY.UnitOfWork;
@@ -12,31 +14,39 @@ namespace BAL.Services
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public ProductService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
         public async Task<ProductResponseDTO> CreateProduct(ProductRequestDTO requestDTO)
         {
-            var prodcut = new Product
-            {
-                Name = requestDTO.Name,
-                Stock = requestDTO.Stock,
-                Price = requestDTO.Price,
-                Profit = requestDTO.Profit,
-                CreatedDate = DateTime.Now,
-                UpdateDate = DateTime.Now,
-                IsOut = "N"
+            //var prodcut = new Product
+            //{
+            //    Name = requestDTO.Name,
+            //    Stock = requestDTO.Stock,
+            //    Price = requestDTO.Price,
+            //    Profit = requestDTO.Profit,
+            //    CreatedDate = DateTime.Now,
+            //    UpdateDate = DateTime.Now,
+            //    IsOut = "N"
 
-            };
-            await _unitOfWork.Product.Add(prodcut);
+            //};
+
+            var product = _mapper.Map<Product>(requestDTO);
+            product.CreatedDate = DateTime.Now;
+            product.UpdateDate = DateTime.Now;
+            product.IsOut = "N";
+
+            await _unitOfWork.Product.Add(product);
           int result =   await _unitOfWork.SaveAsync();
 
             return new ProductResponseDTO
             {
                 IsSuccess = result > 0,
                 Message = result > 0 ? "Product created successfully." : "Failed to create product.",
-                Data = prodcut
+                Data = product
             };
 
         }
@@ -149,9 +159,10 @@ namespace BAL.Services
 
         }
 
+
         public async Task<ProductResponseDTO> UpdateProduct(int id, ProductRequestDTO requestDTO)
         {
-           var productId = await _unitOfWork.Product.GetByIdAsync(id);
+            var productId = await _unitOfWork.Product.GetByIdAsync(id);
 
             if (productId == null)
             {
@@ -162,25 +173,25 @@ namespace BAL.Services
                     Data = null!
                 };
             }
-            if(requestDTO.Name is not "string")
+            if (requestDTO.Name is not "string")
             {
 
                 productId.Name = requestDTO.Name;
             }
 
-            if(requestDTO.Stock != 0)
+            if (requestDTO.Stock != 0)
             {
                 productId.Stock = requestDTO.Stock;
 
             }
 
-            if(requestDTO.Price != 0 && requestDTO.Price > 0)
+            if (requestDTO.Price != 0 && requestDTO.Price > 0)
             {
-               
+
                 productId.Price = requestDTO.Price;
             }
-           
-            if(requestDTO.Profit != 0 && requestDTO.Profit > 0)
+
+            if (requestDTO.Profit != 0 && requestDTO.Profit > 0)
             {
                 productId.Profit = requestDTO.Profit;
             }
@@ -189,19 +200,21 @@ namespace BAL.Services
             if (productId.Stock > 0)
             {
                 productId.IsOut = "N";
-            } 
+            }
             else if (productId.Stock < 0)
             {
                 productId.IsOut = "Y";
                 productId.Stock = 0;
             }
 
+            _mapper.Map(requestDTO, productId);
+
             productId.UpdateDate = DateTime.Now;
             _unitOfWork.Product.Update(productId);
 
-          
 
-            
+
+
 
             int result = await _unitOfWork.SaveAsync();
 
@@ -213,6 +226,6 @@ namespace BAL.Services
             };
         }
 
-        
+
     }
 }

@@ -14,9 +14,11 @@ namespace BAL.Services;
 public class AuthenticationService : IAuthenticationService
 {
     private readonly IUnitOfWork _unitOfWork;
-    public AuthenticationService(IUnitOfWork unitOfWork)
+    private readonly CommonAuthentication _commonAuthentication;
+    public AuthenticationService(IUnitOfWork unitOfWork, CommonAuthentication commonAuthentication)
     {
         _unitOfWork = unitOfWork;
+        _commonAuthentication = commonAuthentication;
     }
 
 
@@ -38,20 +40,19 @@ public class AuthenticationService : IAuthenticationService
 
             returndata.EmailStatus = true;
 
-            // Hash input password using SHA256 to compare with stored password
-            //using var SHA512 = SHA256.Create();
-            //var inputPasswordHash = Convert.ToBase64String(
-            //    SHA512.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.Password))
-            //);
-            //VerifyPasswordHash(loginDTO.Password, userdata.Password);
-            bool isValid = VerifyPasswordHash(loginDTO.Password, userdata.Password);
+            
+            bool isValid = _commonAuthentication.VerifyPasswordHash(loginDTO.Password, userdata.Password);
 
 
-            if (userdata.Password == inputPasswordHash)
+            if (isValid)
             {
                 // Token and other info
-                returndata.Token = CommonTokenGenerator.GenerateToken(userdata, "User");
+                returndata.UserId = userdata.UserID;
+                string userRole = userdata.Role; 
+                returndata.Token = CommonTokenGenerator.GenerateToken(userdata, userRole);
+
                 returndata.Email = userdata.Email;
+                returndata.PasswordStatus = true;
             
                 return returndata;
             }

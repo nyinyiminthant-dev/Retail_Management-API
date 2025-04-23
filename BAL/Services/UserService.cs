@@ -54,6 +54,7 @@ public class UserService : IUserService
             CreateAt = DateTime.Now,
             UpdateAt = DateTime.Now,
             Status = "N",
+            Role = "User",
             OTP = otpCode,
             OTP_Exp = DateTime.Now.AddMinutes(5)
 

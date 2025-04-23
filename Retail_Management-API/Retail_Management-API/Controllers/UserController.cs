@@ -1,4 +1,6 @@
-﻿using BAL.IServices;
+﻿using Asp.Versioning;
+using BAL.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.ApplicationConfig;
@@ -7,7 +9,9 @@ using MODEL.DTOs;
 namespace Retail_Management_API.Controllers;
 
 [Route("api/[controller]")]
+
 [ApiController]
+[ApiVersion("1.0")]
 public class UserController : ControllerBase
 {
 
@@ -17,6 +21,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    [Authorize(Roles = "Admin")]
 
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
@@ -31,6 +36,9 @@ public class UserController : ControllerBase
             return BadRequest(new ResponseModel { Message = ex.Message, Status = APIStatus.SystemError });
         }
     }
+
+
+    [Authorize(Roles = "Admin")]
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(int id)
@@ -60,6 +68,7 @@ public class UserController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin,User")]
     [HttpPatch("Update/{id}")]
     public async Task<IActionResult> UpdateUser(int id, [FromBody] UserRequestDTO request)
     {
@@ -89,6 +98,8 @@ public class UserController : ControllerBase
         }
     }
 
+
+    [Authorize(Roles = "Admin")]
     [HttpPatch("Ban/{id}")]
     public async Task<IActionResult> Ban(int id)
     {
@@ -103,6 +114,8 @@ public class UserController : ControllerBase
         }
     }
 
+
+    [Authorize(Roles = "Admin")]
     [HttpGet("GetByName/{name}")]
     public async Task<IActionResult> GetUserByName(string name)
     {

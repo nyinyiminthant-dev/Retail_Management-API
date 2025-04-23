@@ -12,22 +12,13 @@ namespace BAL.Shared
 {
     public class CommonTokenGenerator
     {
-        //private const string VaultUrl = "";
-        //private static readonly SecretClient Client = new(new Uri(VaultUrl), new DefaultAzureCredential());
-
-        //private const string SecretKeyName = "JWT--SecretKey--DotNet8";
-        //private static readonly KeyVaultSecret SecretKey = Client.GetSecret(SecretKeyName).Value;
-
-        //private const string IssuerName = "JWT--Issuer";
-        //private static readonly KeyVaultSecret Issuer = Client.GetSecret(IssuerName).Value;
+       
         private static readonly string Issuer = "Allianz_DEV";
 
-        //private const string AudienceName = "JWT--Audience";
-        //private static readonly KeyVaultSecret Audience = Client.GetSecret(AudienceName).Value;
+       
         private static readonly string Audience = "Allianz_DEV";
 
-        //private static readonly SymmetricSecurityKey Key = new(Encoding.UTF8.GetBytes(SecretKey.Value));
-
+       
 
         private static readonly SymmetricSecurityKey Key = new(Encoding.UTF8.GetBytes("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAL0zIKgOk+azCEuVZvrvtkgjRk3VcSq4 kDzbi51WD2xCUGNafzI8cmoY9KqFh7s1V7C6nw3/QbzvTytwYR/c5Q0CAwEAAQ=="));
         private static readonly SigningCredentials Credientials = new(Key, SecurityAlgorithms.HmacSha512Signature);
@@ -42,8 +33,7 @@ namespace BAL.Shared
             };
 
             var token = new JwtSecurityToken(
-                //issuer: Issuer.Value,
-                //audience: Audience.Value,
+              
                 issuer: Issuer,
                 audience: Audience,
                 claims: claims,
@@ -64,8 +54,7 @@ namespace BAL.Shared
             };
 
             var token = new JwtSecurityToken(
-                //issuer: Issuer.Value,
-                //audience: Audience.Value,
+              
                 issuer: Issuer,
                 audience: Audience,
                 claims: claims,
@@ -85,8 +74,7 @@ namespace BAL.Shared
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateIssuerSigningKey = true,
-                //ValidIssuer = Issuer.Value,
-                //ValidAudience = Audience.Value,
+               
                 ValidIssuer = Issuer,
                 ValidAudience = Audience,
                 IssuerSigningKey = Key

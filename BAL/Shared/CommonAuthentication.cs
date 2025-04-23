@@ -5,9 +5,9 @@ using System.Text;
 
 namespace BAL.Shared
 {
-    public static class CommonAuthentication
+    public class CommonAuthentication
     {
-        public static byte[] CreatePasswordHash(string password)
+        public byte[] CreatePasswordHash(string password)
         {
             using (var sha512 = SHA256.Create())
             {
@@ -15,16 +15,8 @@ namespace BAL.Shared
             }
         }
 
-        //public static bool VerifyPasswordHash(string password, byte[] storedHash)
-        //{
-        //    using (var sha512 = SHA256.Create())
-        //    {
-        //        var computedHash = sha512.ComputeHash(Encoding.UTF8.GetBytes(password));
-        //        return computedHash.SequenceEqual(storedHash);
-        //    }
-        //}
-
-        public static bool VerifyPasswordHash(string password, string storedHash)
+      
+        public bool VerifyPasswordHash(string password, string storedHash)
         {
             using (var sha256 = SHA256.Create())
             {

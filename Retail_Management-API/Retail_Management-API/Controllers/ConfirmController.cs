@@ -1,4 +1,6 @@
-﻿using BAL.IServices;
+﻿using Asp.Versioning;
+using BAL.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.ApplicationConfig;
@@ -6,7 +8,9 @@ using MODEL.ApplicationConfig;
 namespace Retail_Management_API.Controllers
 {
     [Route("api/[controller]")]
+    [ApiVersion("2.0")]
     [ApiController]
+  
     public class ConfirmController : ControllerBase
     {
         private readonly IConfirmOrderService    _orderService;
@@ -16,6 +20,7 @@ namespace Retail_Management_API.Controllers
             _orderService = orderService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Confirm")]
 
         public async Task<IActionResult> ConfirmOrder(int id)

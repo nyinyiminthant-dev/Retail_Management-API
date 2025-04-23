@@ -29,7 +29,9 @@ namespace BAL.Shared
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IConfirmOrderService, ConFirmOrderService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();    
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<CommonAuthentication>();
+
         }
     }
 }

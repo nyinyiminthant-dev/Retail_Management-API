@@ -30,4 +30,6 @@ public class User
 
     public DateTime OTP_Exp { get; set; } = DateTime.Now.AddMinutes(5);
 
+    public string Role { get; set; }
+
 }
