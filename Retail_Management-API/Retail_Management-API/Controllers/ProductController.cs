@@ -22,7 +22,7 @@ namespace Retail_Management_API.Controllers
             _productService = productService;
         }
 
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
@@ -53,13 +53,13 @@ namespace Retail_Management_API.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        /*[Authorize(Roles = "Admin")]*/
         [HttpPost("Add")]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO request)
+        public async Task<IActionResult> CreateProduct([FromForm] ProductRequestDTO request ,IFormFile? photo)
         {
             try
             {
-                var response = await _productService.CreateProduct(request);
+                var response = await _productService.CreateProduct( request, photo);
                 return Ok(new ResponseModel { Message = response.Message, Status = APIStatus.Successful, Data = response.Data });
             }
             catch (Exception ex)

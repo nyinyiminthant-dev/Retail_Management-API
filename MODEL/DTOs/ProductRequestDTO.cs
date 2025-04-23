@@ -13,5 +13,9 @@ public class ProductRequestDTO
     public int Stock { get; set; }
     public decimal Price { get; set; }
     public decimal Profit { get; set; }
+    
+    public string? Description { get; set; }
+    
+    
 
 }

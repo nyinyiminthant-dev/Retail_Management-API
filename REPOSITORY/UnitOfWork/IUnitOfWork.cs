@@ -14,6 +14,8 @@ namespace REPOSITORY.UnitOfWork
         IOrderRepository Order { get; }
 
         IUserRepository User { get; }
+        
+        ICategoryRepository Category { get; }
 
         AppSettings AppSettings { get; set; }
         Task<int> SaveAsync();

@@ -8,48 +8,68 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Internal;
+
 
 namespace BAL.Services
 {
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        public ProductService(IUnitOfWork unitOfWork, IMapper mapper)
+       
+        
+        
+        public ProductService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
+          
         }
-        public async Task<ProductResponseDTO> CreateProduct(ProductRequestDTO requestDTO)
+     
+        public async Task<ProductResponseDTO> CreateProduct(ProductRequestDTO requestDTO, IFormFile? photo)
         {
-            //var prodcut = new Product
-            //{
-            //    Name = requestDTO.Name,
-            //    Stock = requestDTO.Stock,
-            //    Price = requestDTO.Price,
-            //    Profit = requestDTO.Profit,
-            //    CreatedDate = DateTime.Now,
-            //    UpdateDate = DateTime.Now,
-            //    IsOut = "N"
+            var model = new ProductResponseDTO();
+            string? photoPath = "phot will be here";
 
-            //};
-
-            var product = _mapper.Map<Product>(requestDTO);
-            product.CreatedDate = DateTime.Now;
-            product.UpdateDate = DateTime.Now;
-            product.IsOut = "N";
-
-            await _unitOfWork.Product.Add(product);
-          int result =   await _unitOfWork.SaveAsync();
-
-            return new ProductResponseDTO
+            if (photo != null && photo.Length > 0)
             {
-                IsSuccess = result > 0,
-                Message = result > 0 ? "Product created successfully." : "Failed to create product.",
-                Data = product
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                Directory.CreateDirectory(uploadsFolder); 
+
+                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await photo.CopyToAsync(fileStream);
+                }
+
+                photoPath = "/images/" + uniqueFileName;
+            }
+
+            var product = new Product
+            {
+                Name = requestDTO.Name,
+                Stock = requestDTO.Stock,
+                Price = requestDTO.Price,
+                Profit = requestDTO.Profit,
+                CreatedDate = DateTime.Now,
+                UpdateDate = DateTime.Now,
+                IsOut = "N",
+                Img = photoPath 
             };
 
+            await  _unitOfWork.Product.Add(product);
+            int result = await _unitOfWork.SaveAsync();
+
+            model.Message = result > 0 ? "Product created successfully." : "Failed to create product.";
+            model.IsSuccess = result > 0;
+            model.Data = product;
+
+            return model;
         }
+
 
         public async Task<ProductResponseDTO> DeleteProduct(int id)
         {
@@ -118,14 +138,16 @@ namespace BAL.Services
             }
 
 
-                model.IsSuccess = product != null;
-                model.Message = product != null ? "Product retrieved." : "Product not found.";
-                model.Data = product!;
+                  
+            model.IsSuccess = product != null;
+            model.Message = product != null ? "Product retrieved." : "Product not found.";  
+            model.Data = product!;
 
             return model;
            
         }
 
+      
         public async Task<ProductResponseDTO> IncreaseQuantity(int id, ProductRequestDTO requestDTO)
         {
             ProductResponseDTO model = new ProductResponseDTO();
@@ -207,7 +229,6 @@ namespace BAL.Services
                 productId.Stock = 0;
             }
 
-            _mapper.Map(requestDTO, productId);
 
             productId.UpdateDate = DateTime.Now;
             _unitOfWork.Product.Update(productId);

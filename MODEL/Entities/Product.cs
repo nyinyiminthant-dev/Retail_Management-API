@@ -17,10 +17,16 @@ public class Product
     public int Stock { get; set; }
     public decimal Price { get; set; }
     public decimal Profit { get; set; }
+    
+    public string? Description { get; set; }
 
     public DateTime CreatedDate { get; set; }
 
     public DateTime UpdateDate { get; set; }
+    
+    public string? Img { get; set; }
+    
+    
 
     public string IsOut { get; set; }
 }

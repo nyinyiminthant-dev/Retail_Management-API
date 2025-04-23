@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using BAL.Shared;
 using MODEL;
@@ -51,6 +51,18 @@ builder.Services.AddAuthentication(options =>
            RoleClaimType = ClaimTypes.Role
        };
    });
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyCorsPolicy", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 
 //builder.Services.AddApiVersioning(options =>
@@ -165,9 +177,10 @@ if (app.Environment.IsDevelopment())
     });
 
 }
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseCors("MyCorsPolicy");
 app.MapControllers();
 
 app.Run();

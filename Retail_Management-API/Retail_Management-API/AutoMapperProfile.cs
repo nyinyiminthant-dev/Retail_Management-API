@@ -8,9 +8,9 @@ namespace Retail_Management_API
     {
         public AutoMapperProfile()
         {
-            CreateMap<Product, ProductRequestDTO>().ReverseMap();
+            /*CreateMap<Product, ProductRequestDTO>().ReverseMap();
             
-            CreateMap<Order,OrderResponseDTO>().ReverseMap();
+            CreateMap<Order,OrderResponseDTO>().ReverseMap();*/
 
         }
     }

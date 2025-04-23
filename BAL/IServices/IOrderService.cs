@@ -9,9 +9,13 @@ namespace BAL.IServices;
 
 public interface IOrderService
 {
-    Task<OrderResponseDTO> GetAllOrders();
+    Task<OrderListResponseDTO> GetAllOrders( );
+
+    Task<OrderListResponseDTO> GetAllOrdersByUserId(int userId);
+
     Task<OrderResponseDTO> GetOrderById(int id);
-    Task<OrderResponseDTO> CreateOrder(OrderRequestDTO requestDTO);
+    Task<OrderResponseDTO> InsertOrder(OrderRequestDTO requestDTO);
     Task<OrderResponseDTO> UpdateOrder(int id, OrderRequestDTO requestDTO);
     Task<OrderResponseDTO> DeleteOrder(int id);
 }
+   
