@@ -17,12 +17,11 @@ namespace BAL.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<OrderResponseDTO> InsertOrder(OrderRequestDTO requestDTO)
+        public async Task<OrderResponseDTO> CreateOrder(OrderRequestDTO requestDTO)
         {
             OrderResponseDTO model = new OrderResponseDTO();
 
             var product = await _unitOfWork.Product.GetByIdAsync(requestDTO.ProductId);
-            var user = await _unitOfWork.User.GetByIdAsync(requestDTO.UserId);
             if (product == null)
             {
                 return new OrderResponseDTO
@@ -45,14 +44,12 @@ namespace BAL.Services
                 ProductId = product.ProductId,
                 ProductName = product.Name,
                 Quantity = requestDTO.Quantity,
-                Price = product.Price,
-                Profit = product.Profit,
+                Price = product.Price ,
+                Profit = product.Profit ,
                 IsOrder = "pending",
                 SaleDate = DateTime.Now,
                 TotalPrice = product.Price * requestDTO.Quantity,
-                TotalProfit = product.Profit * requestDTO.Quantity,
-                
-                UserId = user.UserID,
+                TotalProfit = product.Profit * requestDTO.Quantity
             };
 
           
@@ -111,61 +108,17 @@ namespace BAL.Services
             };
         }
 
-        public async Task<OrderListResponseDTO> GetAllOrders()
+        public async Task<OrderResponseDTO> GetAllOrders()
         {
             var orders = await _unitOfWork.Order.GetAll();
+            var firstOrder = orders.FirstOrDefault();
 
-            if (orders is null)
+            return new OrderResponseDTO
             {
-                return new OrderListResponseDTO
-                {
-                    IsSuccess = false,
-                    Message = "No orders found.",
-                    Data = null
-
-
-                };
-            }
-
-
-            return new OrderListResponseDTO
-            {
-                IsSuccess = orders != null,
-                Message = orders != null ? "Orders retrieved." : "No orders found.",
-                Data = orders.ToList()
+                IsSuccess = firstOrder != null,
+                Message = firstOrder != null ? "Orders retrieved." : "No orders found.",
+                Data = firstOrder
             };
-
-           
-        }
-
-        public async Task<OrderListResponseDTO> GetAllOrdersByUserId(int userId)
-        {
-            OrderListResponseDTO model = new OrderListResponseDTO();
-            
-            var user = await _unitOfWork.User.GetByIdAsync(userId);
-
-            if (user is null)
-            {
-                model.IsSuccess = false;
-                model.Message = "User not found.";
-                model.Data = null;
-                return model;
-            }
-            var orders = await _unitOfWork.Order.GetByCondition(u => u.UserId == userId);
-
-            if (orders is null)
-            {
-                model.IsSuccess = false;
-                model.Message = "No orders found for this user.";
-                model.Data = null;
-                return model;
-            }
-
-            model.IsSuccess = true;
-            model.Message = "Orders retrieved successfully.";
-            model.Data = orders.ToList();
-
-            return model;
         }
 
         public async Task<OrderResponseDTO> GetOrderById(int id)
