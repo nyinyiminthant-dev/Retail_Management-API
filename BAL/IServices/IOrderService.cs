@@ -14,7 +14,7 @@ public interface IOrderService
     Task<OrderListResponseDTO> GetAllOrdersByUserId(int userId);
 
     Task<OrderResponseDTO> GetOrderById(int id);
-    Task<OrderResponseDTO> InsertOrder(OrderRequestDTO requestDTO);
+    Task<OrderResponseDTO> CreateOrder(OrderRequestDTO requestDTO);
     Task<OrderResponseDTO> UpdateOrder(int id, OrderRequestDTO requestDTO);
     Task<OrderResponseDTO> DeleteOrder(int id);
 }

@@ -78,7 +78,7 @@ namespace Retail_Management_API.Controllers
         {
             try
             {
-                var response = await _orderService.InsertOrder(request);
+                var response = await _orderService.CreateOrder(request);
                 return Ok(new ResponseModel { Message = response.Message, Status = APIStatus.Successful, Data = response.Data });
             }
             catch (Exception ex)

@@ -121,6 +121,32 @@ namespace BAL.Services
             };
         }
 
+        public async Task<OrderListResponseDTO> GetAllOrdersByUserId(int userId)
+        {
+            OrderListResponseDTO model = new OrderListResponseDTO();
+            
+             var orders = _unitOfWork.Order.GetByExp( o => o.UserId == userId);
+
+             if (orders is null)
+             {
+                 model.IsSuccess = false;
+                 model.Message = "No orders found.";
+                 model.Data = null;
+                 return model;
+             }
+             
+             model.IsSuccess = true;
+             model.Message = "Orders retrieved successfully.";
+             model.Data = orders.ToList();
+             
+             return model;
+        }
+
+        Task<OrderListResponseDTO> IOrderService.GetAllOrders()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<OrderResponseDTO> GetOrderById(int id)
         {
             var order = await _unitOfWork.Order.GetByIdAsync(id);
@@ -132,6 +158,8 @@ namespace BAL.Services
                 Data = order!
             };
         }
+
+   
 
         public async Task<OrderResponseDTO> UpdateOrder(int id, OrderRequestDTO requestDTO)
         {
