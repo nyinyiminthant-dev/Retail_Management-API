@@ -64,6 +64,8 @@ public class CategoryService : ICategoryService
        var item = new Category
        {
            Category_Name = requestDto.Category_Name,
+           CreatedAt = DateTime.Now,
+           UpdateAt = DateTime.Now,
        };
 
        _unitOfWork.Category.Add(item);
@@ -96,7 +98,12 @@ public class CategoryService : ICategoryService
         if (requestDto.Category_Name is not "string")
         {
             category.Category_Name = requestDto.Category_Name;
+            
+            category.UpdateAt = DateTime.Now;
+
         }
+        
+        
         
         _unitOfWork.Category.Update(category);
         var result =  await _unitOfWork.SaveAsync();
